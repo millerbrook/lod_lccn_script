@@ -189,8 +189,8 @@ def confirm_lccn_matches(df, lccn_col, title_col, delay=1.5, sim_threshold=95, m
             # If the file doesn't exist, use only the new data
             combined_df = confirmed_df
 
-        # Save the combined DataFrame back to titles_lccn.csv
-        combined_df.to_csv('titles_lccn.csv', index=False)
+        # Save the combined DataFrame back to data/titles_lccn.csv
+        combined_df.to_csv('data/titles_lccn.csv', index=False)
 
     return df, confirmed_df
 
