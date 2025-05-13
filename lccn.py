@@ -3,22 +3,58 @@ import requests
 import time
 import random
 from thefuzz import fuzz  # Import thefuzz for fuzzy matching
+from threading import Lock
+
+# Shared variables for rate limiting
+request_count = 0
+start_time = time.time()
+lock = Lock()
+
+def rate_limit(max_requests=9, time_window=60):
+    """
+    Ensures that no more than `max_requests` are made within `time_window` seconds.
+    """
+    global request_count, start_time
+    with lock:
+        current_time = time.time()
+        elapsed_time = current_time - start_time
+
+        if elapsed_time > time_window:
+            # Reset the counter and start time after the time window has passed
+            request_count = 0
+            start_time = current_time
+
+        if request_count >= max_requests:
+            # Wait until the time window resets
+            wait_time = time_window - elapsed_time
+            if wait_time > 0:
+                print(f"Rate limit reached. Waiting for {wait_time:.2f} seconds...")
+                time.sleep(wait_time)
+                # Reset after waiting
+                request_count = 0
+                start_time = time.time()
+
+        # Increment the request count
+        request_count += 1
 
 def robust_request(url, params=None, max_retries=5, base_delay=2, verbose=True):
-    """Request with exponential backoff and random jitter for rate limiting."""
+    """
+    Makes a robust request with exponential backoff and rate limiting.
+    """
     for attempt in range(max_retries):
+        rate_limit()  # Apply rate limiting before making the request
         try:
             response = requests.get(url, params=params)
             if response.status_code == 200:
                 return response
-            elif response.status_code == 429:
+            elif response.status_code == 429:  # Too many requests
                 wait = base_delay * (2 ** attempt) + random.uniform(0, 1)
                 if verbose:
-                    print(f"Rate limited. Sleeping for {wait:.2f} seconds...")
+                    print(f"Rate limited by server. Retrying in {wait:.2f} seconds...")
                 time.sleep(wait)
             else:
                 if verbose:
-                    print(f"Error: {response.status_code} for URL: {url}")
+                    print(f"HTTP error {response.status_code} for URL: {url}")
                 return None
         except requests.RequestException as e:
             if verbose:
@@ -30,8 +66,22 @@ def robust_request(url, params=None, max_retries=5, base_delay=2, verbose=True):
 
 def get_lccn_for_title(title, max_retries=5, delay=1.5, threshold=90, verbose=True):
     """
-    Searches for LCCNs for a given title using the Library of Congress search API.
+    Searches for LCCNs for a given title using the Library of Congress search API or reuses LCCNs from titles_lccn.csv.
     """
+    # Check if titles_lccn.csv exists and reuse LCCNs if the title matches
+    try:
+        titles_lccn_df = pd.read_csv('titles_lccn.csv')
+        matching_row = titles_lccn_df[titles_lccn_df['Title'].str.strip().str.lower() == title.strip().lower()]
+        if not matching_row.empty:
+            lccn = matching_row.iloc[0]['LCCN']
+            if verbose:
+                print(f"Reused LCCN from titles_lccn.csv for '{title}': {lccn}")
+            return [lccn] if pd.notna(lccn) else []
+    except FileNotFoundError:
+        if verbose:
+            print("titles_lccn.csv not found. Proceeding with API request.")
+
+    # If no match in titles_lccn.csv, proceed with API request
     url = "https://www.loc.gov/search/"
     params = {
         'all': 'true',
@@ -88,7 +138,8 @@ def get_lccn_for_title(title, max_retries=5, delay=1.5, threshold=90, verbose=Tr
 
 def confirm_lccn_matches(df, lccn_col, title_col, delay=1.5, sim_threshold=95, max_retries=5, verbose=True):
     """
-    Confirms LCCNs by comparing titles using fuzzy matching.
+    Confirms LCCNs by comparing titles using fuzzy matching and appends results to titles_lccn.csv.
+    Ensures no duplicate lines in titles_lccn.csv.
     """
     confirmed_titles_lccn = []
     for idx, row in df.iterrows():
@@ -122,9 +173,24 @@ def confirm_lccn_matches(df, lccn_col, title_col, delay=1.5, sim_threshold=95, m
         if not found:
             # If no confirmed match, clear the cell
             df.at[idx, lccn_col] = []
-    # Create DataFrame and save to CSV instead of Excel
+
+    # Append to titles_lccn.csv without duplicates
     confirmed_df = pd.DataFrame(confirmed_titles_lccn)
-    confirmed_df.to_csv('titles_lccn.csv', index=False)
+    if not confirmed_df.empty:
+        try:
+            # Read existing titles_lccn.csv
+            existing_df = pd.read_csv('titles_lccn.csv')
+            # Combine existing and new data
+            combined_df = pd.concat([existing_df, confirmed_df], ignore_index=True)
+            # Drop duplicates based on 'Title' and 'LCCN' columns
+            combined_df = combined_df.drop_duplicates(subset=['Title', 'LCCN'], keep='first')
+        except FileNotFoundError:
+            # If the file doesn't exist, use only the new data
+            combined_df = confirmed_df
+
+        # Save the combined DataFrame back to titles_lccn.csv
+        combined_df.to_csv('titles_lccn.csv', index=False)
+
     return df, confirmed_df
 
 def get_title_from_lccn(lccn, delay=1.5, max_retries=5, verbose=True):
@@ -132,6 +198,7 @@ def get_title_from_lccn(lccn, delay=1.5, max_retries=5, verbose=True):
     Retrieves the title of a book using its LCCN from the Library of Congress JSON API.
     """
     url = f"https://www.loc.gov/item/{lccn}/?fo=json"
+    rate_limit()  # Apply rate limiting before making the request
     response = robust_request(url, max_retries=max_retries, base_delay=delay, verbose=verbose)
     
     if response and response.status_code == 200:
