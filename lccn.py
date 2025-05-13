@@ -141,6 +141,7 @@ def confirm_lccn_matches(df, lccn_col, title_col, delay=1.5, sim_threshold=95, m
     Confirms LCCNs by comparing titles using fuzzy matching and appends results to titles_lccn.csv.
     Ensures no duplicate lines in titles_lccn.csv.
     """
+    rate_limit()  # Apply rate limiting before processing
     confirmed_titles_lccn = []
     for idx, row in df.iterrows():
         orig_title = row[title_col]
