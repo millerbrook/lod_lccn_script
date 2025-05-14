@@ -29,3 +29,6 @@ venv/
 
 # Environment variables
 .env
+
+# Virtual environment
+.venv/
