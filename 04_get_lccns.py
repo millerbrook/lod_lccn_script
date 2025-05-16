@@ -5,6 +5,7 @@ import random
 import re
 from thefuzz import fuzz  # Import thefuzz for fuzzy matching
 from threading import Lock
+import os
 
 # Shared variables for rate limiting
 request_count = 0
@@ -292,5 +293,20 @@ if __name__ == "__main__":
 
     # Write the final DataFrame to lccns.csv in the data folder
     df.to_csv('data/lccns.csv', index=False, encoding='utf-8-sig')
+
+    # Path to titles_lccn.csv
+    titles_lccn_path = 'data/titles_lccn.csv'
+
+    # Read existing titles_lccn.csv if it exists
+    if os.path.exists(titles_lccn_path):
+        existing = pd.read_csv(titles_lccn_path)
+        combined = pd.concat([existing, df[['title', 'LCCN']].rename(columns={'title': 'Title'})], ignore_index=True)
+        # Drop duplicates based on both Title and LCCN
+        combined = combined.drop_duplicates(subset=['Title', 'LCCN'])
+    else:
+        combined = df[['title', 'LCCN']].rename(columns={'title': 'Title'})
+
+    # Write back to titles_lccn.csv
+    combined.to_csv(titles_lccn_path, index=False, encoding='utf-8-sig')
 
     print("\nDataFrame with LCCNs written to 'data/lccns.csv'")
