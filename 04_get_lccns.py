@@ -68,7 +68,7 @@ def robust_request(url, params=None, max_retries=5, base_delay=2, verbose=True):
 
 def screen_and_clean_title(title):
     """
-    Screens a title for URLs, semicolons, and page numbers.
+    Screens a title for URLs and page numbers.
     Returns:
         cleaned_title: cleaned title string or None if not usable
         bad_reason: reason string if title is bad, else None
@@ -79,9 +79,6 @@ def screen_and_clean_title(title):
     # 1. Check for URLs
     if re.search(r'https?://|www\.', title_strip, re.IGNORECASE):
         return None, "url"
-    # 2. Check for semicolons
-    if ';' in title_strip:
-        return None, "semicolon"
     # 3. Check for page numbers like 'p.44', 'p. 44', 'p. 44-45'
     page_pattern = r'(.*?)(?:\s*\bp\.\s*\d+(-\d+)?\b.*)$'
     match = re.match(page_pattern, title_strip, re.IGNORECASE)

@@ -1,7 +1,7 @@
 import openpyxl
 import pandas as pd
 
-def get_target_persons(filepath='data/Person and Places Directory 5 15 25.xlsx', sheetname='Person List'):
+def get_target_persons(filepath='data/standard_directory_persons.xlsx', sheetname='Person List'):
     # Load the workbook and sheet
     wb = openpyxl.load_workbook(filepath, data_only=True)
     ws = wb[sheetname]
