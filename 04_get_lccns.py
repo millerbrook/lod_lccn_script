@@ -2,6 +2,7 @@ import pandas as pd
 import requests
 import time
 import random
+import re
 from thefuzz import fuzz  # Import thefuzz for fuzzy matching
 from threading import Lock
 
@@ -64,13 +65,64 @@ def robust_request(url, params=None, max_retries=5, base_delay=2, verbose=True):
         print("Failed after retries.")
     return None
 
+def screen_and_clean_title(title):
+    """
+    Screens a title for URLs, semicolons, and page numbers.
+    Returns:
+        cleaned_title: cleaned title string or None if not usable
+        bad_reason: reason string if title is bad, else None
+    """
+    if not isinstance(title, str):
+        return None, "not_a_string"
+    title_strip = title.strip()
+    # 1. Check for URLs
+    if re.search(r'https?://|www\.', title_strip, re.IGNORECASE):
+        return None, "url"
+    # 2. Check for semicolons
+    if ';' in title_strip:
+        return None, "semicolon"
+    # 3. Check for page numbers like 'p.44', 'p. 44', 'p. 44-45'
+    page_pattern = r'(.*?)(?:\s*\bp\.\s*\d+(-\d+)?\b.*)$'
+    match = re.match(page_pattern, title_strip, re.IGNORECASE)
+    if match:
+        cleaned = match.group(1).strip()
+        if cleaned:
+            return cleaned, None
+        else:
+            return None, "page_number"
+    return title_strip, None
+
+def write_bad_titles(bad_titles, bad_titles_path='data/bad_titles.csv'):
+    """
+    Writes bad titles to bad_titles.csv, appending if the file exists.
+    """
+    bad_df = pd.DataFrame(bad_titles, columns=['Title', 'Reason'])
+    try:
+        existing = pd.read_csv(bad_titles_path)
+        bad_df = pd.concat([existing, bad_df], ignore_index=True)
+        bad_df = bad_df.drop_duplicates(subset=['Title', 'Reason'])
+    except FileNotFoundError:
+        pass
+    bad_df.to_csv(bad_titles_path, index=False)
+
 def get_lccn_for_title(title, max_retries=5, delay=1.5, threshold=90, verbose=True):
     """
     Searches for LCCNs for a given title using the Library of Congress search API or reuses LCCNs from titles_lccn.csv.
+    Screens for URLs, semicolons, and page numbers.
     """
+    bad_titles = []
+    cleaned_title, bad_reason = screen_and_clean_title(title)
+    if bad_reason:
+        bad_titles.append((title, bad_reason))
+        write_bad_titles(bad_titles)
+        if verbose:
+            print(f"Skipped bad title: {title} (Reason: {bad_reason})")
+        return []
+    title = cleaned_title
+
     # Check if titles_lccn.csv exists and reuse LCCNs if the title matches
     try:
-        titles_lccn_df = pd.read_csv('titles_lccn.csv')
+        titles_lccn_df = pd.read_csv('data/titles_lccn.csv')
         matching_row = titles_lccn_df[titles_lccn_df['Title'].str.strip().str.lower() == title.strip().lower()]
         if not matching_row.empty:
             lccn = matching_row.iloc[0]['LCCN']
@@ -180,7 +232,7 @@ def confirm_lccn_matches(df, lccn_col, title_col, delay=1.5, sim_threshold=95, m
     if not confirmed_df.empty:
         try:
             # Read existing titles_lccn.csv
-            existing_df = pd.read_csv('titles_lccn.csv')
+            existing_df = pd.read_csv('./data/titles_lccn.csv')
             # Combine existing and new data
             combined_df = pd.concat([existing_df, confirmed_df], ignore_index=True)
             # Drop duplicates based on 'Title' and 'LCCN' columns
@@ -225,29 +277,20 @@ def get_title_from_lccn(lccn, delay=1.5, max_retries=5, verbose=True):
 
 # Example usage (uncomment to test as a script)
 if __name__ == "__main__":
-    data = {
-         'source': ['Sample', 'Sample', 'Sample', 'Sample', 'Sample', 'Sample'],
-         'title': [
-             'The Adventures of Captain John Smith',
-             'Pride and Prejudice', 
-            'Beloved',
-            'A Farewell to Arms',
-            'Sense and Sensibility',
-            'A Fine Balance'
-         ],
-         'DoB Source': ['', '', '', '', "", ''],
-         'DoD Source': ['', '', '', '', "", ''],
-         'DoD (P570) Source': ['', '', '', '', '', ''],
-         'P26+P2562 Source': ['', '', '', '', '', '']
-     }
-    df = pd.DataFrame(data)
+    # Read unique_sources.txt as a list of titles
+    with open('data/unique_sources.txt', 'r', encoding='utf-8') as f:
+        titles = [line.strip() for line in f if line.strip()]
+
+    # Build DataFrame
+    df = pd.DataFrame({'title': titles})
+
+    # Get LCCNs for each title
     df['LCCN'] = df['title'].apply(get_lccn_for_title)
-    print("\nInitial DataFrame with LCCNs:")
-    print(df)
 
     # Confirm LCCNs and build spreadsheet
     df, confirmed_df = confirm_lccn_matches(df, 'LCCN', 'title')
-    print("\nDataFrame after confirmation:")
-    print(df)
-    print("\nConfirmed Titles and LCCNs:")
-    print(confirmed_df)
+
+    # Write the final DataFrame to lccns.csv in the data folder
+    df.to_csv('data/lccns.csv', index=False, encoding='utf-8-sig')
+
+    print("\nDataFrame with LCCNs written to 'data/lccns.csv'")
