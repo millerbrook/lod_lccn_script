@@ -26,12 +26,14 @@ def get_target_persons(filepath='data/standard_directory_persons.xlsx', sheetnam
     # Convert to DataFrame
     df = pd.DataFrame(rows, columns=header)
 
-    # Exclude records with data length >= 5 in any column starting with 'LOD' or 'lod'
+    # Exclude records with data length >= 6 in any column starting with 'LOD' or 'lod'
     lod_cols = [col for col in df.columns if str(col).lower().startswith('lod')]
     mask = df[lod_cols].applymap(lambda x: len(str(x)) if pd.notnull(x) else 0)
-    exclude_mask = (mask >= 5).any(axis=1)
+    exclude_mask = (mask >= 6).any(axis=1)
     df_filtered = df[~exclude_mask]
 
+    # If you want to not filter anything, just use the original DataFrame
+    # df_filtered = df.copy()
     # Write to CSV in the data folder
     df_filtered.to_csv('data/target_persons.csv', index=False, encoding='utf-8-sig')
 
