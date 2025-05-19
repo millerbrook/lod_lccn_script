@@ -40,7 +40,7 @@ def rate_limit(max_requests=9, time_window=60):
         # Increment the request count
         request_count += 1
 
-def robust_request(url, params=None, max_retries=5, base_delay=2, verbose=True):
+def robust_request(url, params=None, max_retries=5, base_delay=6, verbose=True):
     """
     Makes a robust request with exponential backoff and rate limiting.
     """
@@ -51,10 +51,15 @@ def robust_request(url, params=None, max_retries=5, base_delay=2, verbose=True):
             if response.status_code == 200:
                 return response
             elif response.status_code == 429:  # Too many requests
-                wait = base_delay * (2 ** attempt) + random.uniform(0, 1)
-                if verbose:
-                    print(f"Rate limited by server. Retrying in {wait:.2f} seconds...")
-                time.sleep(wait)
+                if attempt == max_retries - 1:
+                    if verbose:
+                        print("Rate limited by server. Waiting for 1 hour and 1 minute (3660 seconds) before retrying...")
+                    time.sleep(3660)  # Wait 1 hour and 1 minute to be safe
+                else:
+                    wait = base_delay * (2 ** attempt) + random.uniform(0, 1)
+                    if verbose:
+                        print(f"Rate limited by server. Retrying in {wait:.2f} seconds...")
+                    time.sleep(wait)
             else:
                 if verbose:
                     print(f"HTTP error {response.status_code} for URL: {url}")

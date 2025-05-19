@@ -1,4 +1,14 @@
 # Makefile for PRINT Project LCCN Workflow
+#
+# USAGE:
+#   make
+#     - Runs the workflow with ALL rows from the Excel file (default).
+#
+#   make FILTER_RED_FLAG=--filter-red
+#     - Runs the workflow filtering ONLY rows with red "Researcher/Date" cells.
+#
+# The FILTER_RED_FLAG variable is passed to 01_get_target_persons.py.
+# By default, it is empty (all rows). Set it to --filter-red to filter by red.
 
 # Main output: Excel workbook bundling all results for users to download
 all: data/bundle_persons_titles_lccn_missing.xlsx
@@ -6,8 +16,9 @@ all: data/bundle_persons_titles_lccn_missing.xlsx
 # Step 1: Extract target persons from the master Excel file
 # Input:  data/standard_directory_persons.xlsx
 # Output: data/target_persons.csv (temporary)
+FILTER_RED_FLAG ?=
 data/target_persons.csv: data/standard_directory_persons.xlsx
-	python 01_get_target_persons.py
+	python 01_get_target_persons.py $(FILTER_RED_FLAG)
 
 # Step 2: Generate skeletal persons DataFrame with titles and sources
 # Input:  data/target_persons.csv
@@ -24,7 +35,7 @@ data/unique_sources.txt: data/df_persons_skeletal.csv
 # Step 4: Look up LCCNs for each unique source title
 # Input:  data/unique_sources.txt
 # Output: data/lccns.csv (temporary), data/titles_lccn.csv (persistent), data/missing_titles.csv (persistent)
-data/lccns.csv: data/unique_sources.txt
+data/lccns.csv data/titles_lccn.csv data/missing_titles.csv: data/unique_sources.txt
 	python 04_get_lccns.py
 
 # Step 5: Add LCCNs to the skeletal persons DataFrame
