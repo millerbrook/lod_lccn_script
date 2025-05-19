@@ -66,6 +66,19 @@ def robust_request(url, params=None, max_retries=5, base_delay=2, verbose=True):
         print("Failed after retries.")
     return None
 
+def write_missing_titles(missing_titles, missing_titles_path='data/missing_titles.csv'):
+    """
+    Writes missing titles to missing_titles.csv, appending if the file exists.
+    """
+    missing_df = pd.DataFrame(missing_titles, columns=['Title', 'Reason'])
+    try:
+        existing = pd.read_csv(missing_titles_path)
+        missing_df = pd.concat([existing, missing_df], ignore_index=True)
+        missing_df = missing_df.drop_duplicates(subset=['Title', 'Reason'])
+    except FileNotFoundError:
+        pass
+    missing_df.to_csv(missing_titles_path, index=False)
+
 def screen_and_clean_title(title):
     """
     Screens a title for URLs and page numbers.
@@ -106,13 +119,13 @@ def write_bad_titles(bad_titles, bad_titles_path='data/bad_titles.csv'):
 def get_lccn_for_title(title, max_retries=5, delay=1.5, threshold=90, verbose=True):
     """
     Searches for LCCNs for a given title using the Library of Congress search API or reuses LCCNs from titles_lccn.csv.
-    Screens for URLs, semicolons, and page numbers.
+    Screens for URLs and page numbers.
     """
-    bad_titles = []
+    missing_titles = []
     cleaned_title, bad_reason = screen_and_clean_title(title)
     if bad_reason:
-        bad_titles.append((title, bad_reason))
-        write_bad_titles(bad_titles)
+        missing_titles.append((title, bad_reason))
+        write_missing_titles(missing_titles)
         if verbose:
             print(f"Skipped bad title: {title} (Reason: {bad_reason})")
         return []
@@ -141,6 +154,8 @@ def get_lccn_for_title(title, max_retries=5, delay=1.5, threshold=90, verbose=Tr
     }
     response = robust_request(url, params=params, max_retries=max_retries, base_delay=delay, verbose=verbose)
     if response is None:
+        missing_titles.append((title, "lccn not found"))
+        write_missing_titles(missing_titles)
         return []
 
     results = response.json().get('results', [])
@@ -148,6 +163,8 @@ def get_lccn_for_title(title, max_retries=5, delay=1.5, threshold=90, verbose=Tr
         if verbose:
             print(f"No results for '{title}'")
         time.sleep(delay + random.uniform(0, 1))
+        missing_titles.append((title, "lccn not found"))
+        write_missing_titles(missing_titles)
         return []
 
     lccns = []
@@ -178,6 +195,10 @@ def get_lccn_for_title(title, max_retries=5, delay=1.5, threshold=90, verbose=Tr
                 lccns.extend(number_lccn)
             else:
                 lccns.append(number_lccn)
+
+    if not lccns:
+        missing_titles.append((title, "lccn not found"))
+        write_missing_titles(missing_titles)
 
     if matches and verbose:
         print(f"\nMatches for '{title}':")
