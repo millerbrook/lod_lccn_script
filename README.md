@@ -1,0 +1,1 @@
+Before running make, create and activate your virtual environment (e.g., python3 -m venv venv && source venv/bin/activate). All dependencies should be installed in the active environment.

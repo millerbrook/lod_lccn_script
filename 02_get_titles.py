@@ -119,7 +119,8 @@ def process_occupation_column(row):
     return row
 
 def process_persons_dataframe(df_2):
-    df_persons = df_2.replace('', np.nan, regex=True).sample(n=50, random_state=42)
+    # Remove sampling to include all rows
+    df_persons = df_2.replace('', np.nan, regex=True)
     np.random.seed(1)
 
     # Drop unnecessary columns

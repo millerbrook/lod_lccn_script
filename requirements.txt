@@ -10,7 +10,7 @@ et_xmlfile==2.0.0
 executing==2.2.0
 idna==3.10
 ipykernel==6.29.5
-ipython==9.2.0
+ipython
 ipython_pygments_lexers==1.1.1
 jedi==0.19.2
 Jinja2==3.1.6
@@ -34,7 +34,7 @@ Pygments==2.19.1
 python-dateutil==2.9.0.post0
 python-dotenv==1.1.0
 pytz==2025.2
-pywin32==310
+pywin32==310; platform_system == "Windows"
 pyzmq==26.4.0
 RapidFuzz==3.13.0
 requests==2.32.3

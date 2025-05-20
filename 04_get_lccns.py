@@ -41,10 +41,11 @@ def robust_request(url, params=None, max_retries=5, base_delay=6, verbose=True):
     """
     Makes a robust request with exponential backoff and rate limiting.
     """
+    headers = {'User-Agent': 'Mozilla/5.0 (compatible; LCCNBot/1.0; +https://github.com/millerbrook/lod_lccn_script)'}
     for attempt in range(max_retries):
         rate_limit()
         try:
-            response = requests.get(url, params=params)
+            response = requests.get(url, params=params, headers=headers)  # <-- add headers here
             if response.status_code == 200:
                 return response
             elif response.status_code == 429:
