@@ -32,3 +32,6 @@ venv/
 
 # Virtual environment
 .venv/
+
+#Giant .utf8 files
+*.utf8

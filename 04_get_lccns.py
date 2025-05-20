@@ -305,7 +305,7 @@ def process_batch(titles, verbose=True):
     df_out['LCCN'] = df_out['LCCN'].apply(safe_str)
 
     if os.path.exists(titles_lccn_path):
-        existing = pd.read_csv(titles_lccn_path)
+        existing = pd.read_csv(titles_lccn_path, dtype={'LCCN': str})  # <-- force LCCN as string
         # Ensure existing LCCN column is string
         if 'LCCN' in existing.columns:
             existing['LCCN'] = existing['LCCN'].apply(safe_str)
