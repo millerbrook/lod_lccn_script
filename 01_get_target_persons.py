@@ -28,7 +28,7 @@ def get_target_persons(filepath='data/standard_directory_persons.xlsx', sheetnam
 
     # Exclude records with data length >= 6 in any column starting with 'LOD' or 'lod'
     lod_cols = [col for col in df.columns if str(col).lower().startswith('lod')]
-    mask = df[lod_cols].applymap(lambda x: len(str(x)) if pd.notnull(x) else 0)
+    mask = df[lod_cols].apply(lambda col: col.map(lambda x: len(str(x)) if pd.notnull(x) else 0))
     exclude_mask = (mask >= 6).any(axis=1)
     df_filtered = df[~exclude_mask]
 
