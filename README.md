@@ -4,12 +4,19 @@ Before running make, create and activate your virtual environment (e.g., python3
 
 The script `test_open_library_dump.py` expects the Open Library editions data dump in gzipped format at `data/ol_dump_editions_latest.txt.gz`.
 
-To download the latest dump, run:
+### Downloading with aria2 (Recommended for Large Files)
 
-```bash
-mkdir -p data
-wget https://openlibrary.org/data/ol_dump_editions_latest.txt.gz -O data/ol_dump_editions_latest.txt.gz
-```
+1. [Download aria2](https://github.com/aria2/aria2/releases) and extract it to a convenient folder.
+2. Open a terminal or command prompt in your project directory.
+3. Make sure the `data` folder exists:
+    ```sh
+    mkdir data
+    ```
+4. Run the following command to download the file using multiple connections for faster speed:
+    ```sh
+    ./aria2c.exe -x 8 -s 8 https://openlibrary.org/data/ol_dump_editions_latest.txt.gz -d data
+    ```
+    *(On Windows, use `aria2c.exe` instead of `./aria2c.exe` if not using a bash terminal.)*
 
 You can find more information and other dumps at:  
 https://openlibrary.org/developers/dumps

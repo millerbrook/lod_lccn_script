@@ -38,3 +38,6 @@ venv/
 
 # Ignore Open Library dump and other large gzip files
 *.gz
+
+# Ignore aria2 download
+aria2/

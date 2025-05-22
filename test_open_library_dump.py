@@ -2,7 +2,6 @@ import gzip
 import json
 import time
 import string
-from rapidfuzz import fuzz
 
 def normalize(text):
     """Lowercase and remove punctuation for better matching."""
@@ -10,40 +9,48 @@ def normalize(text):
         return ""
     return text.translate(str.maketrans('', '', string.punctuation)).strip().lower()
 
-def get_input_ninety(input_norm):
-    ninety_pct_len = int(len(input_norm) * 0.9)
-    if ninety_pct_len >= len(input_norm):
+def get_match_substring(input_norm):
+    x = len(input_norm)
+    if x <= 40:
+        print(f"Using 100% of input string for matching ({x} characters).")
         return input_norm
-    # Extend to the end of the current word
-    end = ninety_pct_len
-    while end < len(input_norm) and input_norm[end].isalnum():
+    # Always take at least the first 40 chars, extend to end of word
+    end = 40
+    while end < x and input_norm[end].isalnum():
         end += 1
-    return input_norm[:end]
+    base = input_norm[:end]
+    remaining = input_norm[end:]
+    remaining_len = len(remaining)
+    # Apply the formula for y
+    if x > 40:
+        y = (1/150000) * x**2 - 0.003 * x + 1.0333
+        y = max(min(y, 1.0), 0.6)  # Clamp between 0.6 and 1.0 for safety
+    else:
+        y = 1.0
+    extra_chars = int(remaining_len * y)
+    percent_used = ((len(base) + extra_chars) / x) * 100
+    print(f"Using {percent_used:.1f}% of input string for matching ({len(base) + extra_chars} of {x} characters).")
+    return base + remaining[:extra_chars]
 
 def find_best_title_match(
     input_title,
     dump_path="data/ol_dump_editions_latest.txt.gz",
-    threshold=96,  # >95
     max_results=5
 ):
     start_time = time.time()
-    input_norm = normalize(input_title)
+    input_norm_full = normalize(input_title)
+    input_norm = get_match_substring(input_norm_full)
     matches = []
-
-    # Use only the first 90% of the normalized input for matching, extended to word boundary
-    input_ninety = get_input_ninety(input_norm)
 
     with gzip.open(dump_path, "rt", encoding="utf-8") as f:
         for line_num, line in enumerate(f):
             try:
-                # Split line on tabs and parse only the last field as JSON
                 fields = line.rstrip("\n").split("\t")
                 if not fields or not fields[-1].startswith("{"):
                     continue  # skip malformed lines
                 record = json.loads(fields[-1])
                 title = record.get("title", "")
                 full_title = record.get("full_title", "")
-                subtitle = record.get("subtitle", "")
                 lccn = record.get("lccn")
                 oclc = record.get("oclc")
                 oclc_numbers = record.get("oclc_numbers")
@@ -54,50 +61,21 @@ def find_best_title_match(
                 title_norm = normalize(title)
                 full_title_norm = normalize(full_title)
 
-                # Substring match using first 90% of input, with even stricter checks
-                input_word_count = len(input_norm.split())
-                title_word_count = len(title_norm.split())
-                min_word_count = max(3, input_word_count)
-                if (
-                    input_ninety
-                    and len(title_norm) >= len(input_norm)
-                    and (input_ninety in title_norm or input_ninety in full_title_norm)
-                    and title_word_count >= min_word_count
-                    and title_norm.strip()  # skip empty/whitespace titles
-                ):
-                    best_score = 100
-                    display_title = full_title if full_title else title
-                    if subtitle and not full_title:
-                        display_title = f"{title} {subtitle}"
-                    matches.append({
-                        "score": best_score,
-                        "display_title": display_title,
-                        "lccn": lccn,
-                        "oclc": oclc,
-                        "oclc_numbers": oclc_numbers,
-                    })
-                    if len(matches) >= max_results:
-                        break
-                    continue
-
-                # Fuzzy match using first 90% of input
-                score_title = fuzz.partial_ratio(input_ninety, title_norm) if title_norm else 0
-                score_full_title = fuzz.partial_ratio(input_ninety, full_title_norm) if full_title_norm else 0
-
-                best_score = max(score_title, score_full_title)
-                if best_score > 95:
-                    display_title = full_title if score_full_title >= score_title and full_title else title
-                    if subtitle and display_title == title:
-                        display_title = f"{title} {subtitle}"
-                    matches.append({
-                        "score": best_score,
-                        "display_title": display_title,
-                        "lccn": lccn,
-                        "oclc": oclc,
-                        "oclc_numbers": oclc_numbers,
-                    })
-                    if len(matches) >= max_results:
-                        break
+                # Exact substring match (case-insensitive, punctuation-insensitive)
+                if input_norm in title_norm or input_norm in full_title_norm:
+                    # Only count as a match if at least one identifier is present
+                    if lccn or oclc or oclc_numbers:
+                        matches.append({
+                            "title": title,
+                            "full_title": full_title,
+                            "display_title": full_title if full_title else title,
+                            "lccn": lccn,
+                            "oclc": oclc,
+                            "oclc_numbers": oclc_numbers,
+                            "record": record,
+                        })
+                        if len(matches) >= max_results:
+                            break
 
             except Exception:
                 continue
@@ -108,11 +86,13 @@ def find_best_title_match(
     if matches:
         for i, match in enumerate(matches, 1):
             print(f"\nMatch {i}:")
-            print(f"  Score: {match['score']}")
-            print(f"  Title: {match['display_title']}")
+            print(f"  full_title: {match.get('full_title', '')}")
+            print(f"  title: {match.get('title', '')}")
+            print(f"  Title (display): {match['display_title']}")
             print(f"  LCCN: {match['lccn']}")
             print(f"  OCLC: {match['oclc']}")
             print(f"  OCLC Numbers: {match['oclc_numbers']}")
+            print(f"  Full record: {json.dumps(match['record'], ensure_ascii=False, indent=2)}")
     else:
         print("No matches found.")
 
