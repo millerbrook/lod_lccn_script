@@ -35,3 +35,6 @@ venv/
 
 #Giant .utf8 files
 *.utf8
+
+# Ignore Open Library dump and other large gzip files
+*.gz
