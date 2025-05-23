@@ -5,6 +5,7 @@ import string
 import csv
 import os
 from rapidfuzz import fuzz
+import ast
 
 def normalize(text):
     """Lowercase and remove punctuation for better matching."""
@@ -30,6 +31,9 @@ def get_match_substring(input_norm):
         y = 1.0
     extra_chars = int(remaining_len * y)
     return base + remaining[:extra_chars]
+
+def is_reasonable_length(candidate, input_norm, factor=1.5):
+    return len(candidate) >= len(input_norm) and len(candidate) <= factor * len(input_norm)
 
 def find_best_title_match(
     input_title,
@@ -71,7 +75,7 @@ def find_best_title_match(
         print(f"OCLC: {existing_row.get('OCLC','')}")
         print(f"Alt_OCLC: {existing_row.get('Alt_OCLC','')}")
         print(f"No_match: {existing_row.get('No_match','')}")
-        return
+        return existing_row
 
     # Search logic
     with gzip.open(dump_path, "rt", encoding="utf-8") as f:
@@ -98,10 +102,15 @@ def find_best_title_match(
                 full_title_norm = normalize(full_title)
 
                 # Fuzzy substring match using RapidFuzz partial_ratio, threshold 98%
-                score_title = fuzz.partial_ratio(input_norm, title_norm) if title_norm else 0
-                score_full_title = fuzz.partial_ratio(input_norm, full_title_norm) if full_title_norm else 0
+                score_title = fuzz.partial_ratio(input_norm, title_norm) if is_reasonable_length(title_norm, input_norm) else 0
+                score_full_title = fuzz.partial_ratio(input_norm, full_title_norm) if is_reasonable_length(full_title_norm, input_norm) else 0
 
-                if max(score_title, score_full_title) >= 98:
+                min_substring_length = int(0.95 * len(input_norm))
+                is_good_substring = (
+                    (input_norm in title_norm and len(input_norm) >= min_substring_length) or
+                    (input_norm in full_title_norm and len(input_norm) >= min_substring_length)
+                )
+                if is_good_substring and (score_title >= 96 or score_full_title >= 96):
                     if all_lccn or all_oclc:
                         matches.append({
                             "title": title,
@@ -110,6 +119,10 @@ def find_best_title_match(
                             "lccn": all_lccn,
                             "oclc": all_oclc,
                             "record": record,
+                            "score": max(score_title, score_full_title),
+                            "score_title": score_title,
+                            "score_full_title": score_full_title,
+                            "oclc_numbers": oclc_numbers,
                         })
                         if len(matches) >= max_perfect_matches:
                             break
@@ -145,6 +158,10 @@ def find_best_title_match(
     else:
         no_match = "No match"
 
+    # Ensure all alt_lccn values are strings (same type as best_lccn)
+    alt_lccn = [str(x) for x in alt_lccn]
+    alt_oclc = [str(x) for x in alt_oclc]
+
     # Write to CSV (append, never overwrite)
     os.makedirs(os.path.dirname(csv_path), exist_ok=True)
     file_exists = os.path.isfile(csv_path)
@@ -155,9 +172,9 @@ def find_best_title_match(
         writer.writerow({
             "Title": input_title,
             "LCCN": best_lccn,
-            "Alt_LCCN": json.dumps(alt_lccn, ensure_ascii=False),
+            "Alt_LCCN": repr(alt_lccn),
             "OCLC": best_oclc,
-            "Alt_OCLC": json.dumps(alt_oclc, ensure_ascii=False),
+            "Alt_OCLC": repr(alt_oclc),
             "No_match": no_match
         })
 
@@ -169,6 +186,33 @@ def find_best_title_match(
         print(f"Alt OCLC: {alt_oclc}")
     else:
         print("No matches found.")
+
+    if matches:
+        for i, match in enumerate(matches, 1):
+            print(f"\nMatch {i}:")
+            print(f"  Score: {match.get('score', '')}")
+            print(f"  score_title: {match.get('score_title', '')}")
+            print(f"  score_full_title: {match.get('score_full_title', '')}")
+            print(f"  full_title: {match.get('full_title', '')}")
+            print(f"  title: {match.get('title', '')}")
+            print(f"  Title (display): {match.get('display_title', '')}")
+            print(f"  LCCN: {match.get('lccn', '')}")
+            print(f"  OCLC: {match.get('oclc', '')}")
+            print(f"  OCLC Numbers: {match.get('oclc_numbers', '')}")
+            print(f"Full record:\n{json.dumps(match['record'], ensure_ascii=False, indent=2)}")
+    else:
+        print("No matches found.")
+
+    # Return a summary dict for module use
+    return {
+        "Title": input_title,
+        "LCCN": best_lccn,
+        "Alt_LCCN": alt_lccn,
+        "OCLC": best_oclc,
+        "Alt_OCLC": alt_oclc,
+        "No_match": no_match,
+        "matches": matches
+    }
 
 if __name__ == "__main__":
     input_title = input("Enter a book title to search for: ").strip()

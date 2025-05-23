@@ -21,7 +21,7 @@ PYTHON ?= python3
 # The all_batches target will run all batches in order using the specified BATCH_SIZE.
 
 # Main output: Excel workbook bundling all results for users to download
-all: data/bundle_persons_titles_lccn_missing.xlsx
+#all: data/bundle_persons_titles_lccn_missing.xlsx
 
 # Step 1: Extract target persons from the master Excel file
 # Input:  data/standard_directory_persons.xlsx
@@ -45,30 +45,30 @@ data/unique_sources.txt: data/df_persons_skeletal.csv
 # Step 4: Add LCCNs to the skeletal persons DataFrame
 # Input:  data/df_persons_skeletal.csv, data/titles_lccn.csv
 # Output: data/df_persons_skeletal_with_lccn.csv (temporary)
-data/df_persons_skeletal_with_lccn.csv: data/df_persons_skeletal.csv data/titles_lccn.csv
-	$(PYTHON) 05_add_lccns_to_df_persons.py
+# data/df_persons_skeletal_with_lccn.csv: data/df_persons_skeletal.csv data/titles_lccn.csv
+# 	$(PYTHON) 05_add_lccns_to_df_persons.py
 
 # Step 5: Bundle all results into a single Excel workbook for users
 # Input:  data/df_persons_skeletal.csv, data/titles_lccn.csv, data/missing_titles.csv
 # Output: data/bundle_persons_titles_lccn_missing.xlsx (final output)
-data/bundle_persons_titles_lccn_missing.xlsx: data/df_persons_skeletal.csv data/titles_lccn.csv data/missing_titles.csv
-	$(PYTHON) 06_bundle_df_persons_titles_lccn_missing_titles.py
+# data/bundle_persons_titles_lccn_missing.xlsx: data/df_persons_skeletal.csv data/titles_lccn.csv data/missing_titles.csv
+# 	$(PYTHON) 06_bundle_df_persons_titles_lccn_missing_titles.py
 
 # Clean up all intermediate/temporary files (keeps only the main output and persistent files)
-clean:
-	rm -f data/target_persons.csv data/df_persons_skeletal.csv data/unique_sources.txt data/lccns.csv data/df_persons_skeletal_with_lccn.csv
+# clean:
+# 	rm -f data/target_persons.csv data/df_persons_skeletal.csv data/unique_sources.txt data/lccns.csv data/df_persons_skeletal_with_lccn.csv
 
 # Run all batches using Makefile variables
 # Usage: make all_batches BATCH_SIZE=50
-.PHONY: batch all_batches
+# .PHONY: batch all_batches
 
-batch:
-	$(PYTHON) 04_get_lccns.py $(if $(BATCH_SIZE),--batch-size $(BATCH_SIZE)) $(if $(BATCH_INDEX),--batch-index $(BATCH_INDEX))
+# batch:
+# 	$(PYTHON) 04_get_lccns.py $(if $(BATCH_SIZE),--batch-size $(BATCH_SIZE)) $(if $(BATCH_INDEX),--batch-index $(BATCH_INDEX))
 
-all_batches: data/unique_sources.txt
-	@total=$$(wc -l < data/unique_sources.txt); \
-	batch_size=$(BATCH_SIZE); \
-	num_batches=$$(( (total + batch_size - 1) / batch_size )); \
-	for i in $$(seq 0 $$((num_batches - 1))); do \
-		$(MAKE) batch BATCH_SIZE=$(BATCH_SIZE) BATCH_INDEX=$$i || exit $$?; \
-	done
+# all_batches: data/unique_sources.txt
+# 	@total=$$(wc -l < data/unique_sources.txt); \
+# 	batch_size=$(BATCH_SIZE); \
+# 	num_batches=$$(( (total + batch_size - 1) / batch_size )); \
+# 	for i in $$(seq 0 $$((num_batches - 1))); do \
+# 		$(MAKE) batch BATCH_SIZE=$(BATCH_SIZE) BATCH_INDEX=$$i || exit $$?; \
+# 	done
