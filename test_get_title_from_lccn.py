@@ -3,33 +3,34 @@ import random
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import json
+import cloudscraper
 
-# def robust_request(url, max_retries=5, base_delay=2, verbose=True):
-#     """
-#     Makes a robust HTTP GET request with retries and exponential backoff using cloudscraper.
-#     """
-#     scraper = cloudscraper.create_scraper()
-#     for attempt in range(max_retries):
-#         try:
-#             response = scraper.get(url)
-#             if response.status_code == 200:
-#                 return response
-#             elif response.status_code == 429:  # Too many requests
-#                 wait = base_delay * (2 ** attempt) + random.uniform(0, 1)
-#                 if verbose:
-#                     print(f"Rate limited. Retrying in {wait:.2f} seconds...")
-#                 time.sleep(wait)
-#             else:
-#                 if verbose:
-#                     print(f"HTTP error {response.status_code} for URL: {url}")
-#                 return None
-#         except Exception as e:
-#             if verbose:
-#                 print(f"Request failed: {e}")
-#             time.sleep(base_delay * (2 ** attempt) + random.uniform(0, 1))
-#     if verbose:
-#         print("Max retries reached. Request failed.")
-#     return None
+def robust_request(url, max_retries=5, base_delay=2, verbose=True):
+     """
+     Makes a robust HTTP GET request with retries and exponential backoff using cloudscraper.
+     """
+     scraper = cloudscraper.create_scraper()
+     for attempt in range(max_retries):
+        try:
+            response = scraper.get(url)
+            if response.status_code == 200:
+                 return response
+            elif response.status_code == 429:  # Too many requests
+                 wait = base_delay * (2 ** attempt) + random.uniform(0, 1)
+                 if verbose:
+                     print(f"Rate limited. Retrying in {wait:.2f} seconds...")
+                 time.sleep(wait)
+            else:
+                 if verbose:
+                     print(f"HTTP error {response.status_code} for URL: {url}")
+                 return None
+        except Exception as e:
+            if verbose:
+                 print(f"Request failed: {e}")
+            time.sleep(base_delay * (2 ** attempt) + random.uniform(0, 1))
+     if verbose:
+        print("Max retries reached. Request failed.")
+     return None
 
 def get_title_from_lccn_json(lccn, delay=1.5, max_retries=5, verbose=True):
     """
@@ -93,16 +94,16 @@ def get_title_from_lccn_selenium(lccn, verbose=True):
 if __name__ == "__main__":
     # Example LCCN for testing
     test_lccn = "2002022641"  # Replace with a valid LCCN for testing
-    #print(f"Testing get_title_from_lccn_json with LCCN: {test_lccn}")
-    #title = get_title_from_lccn_json(test_lccn, verbose=True)
-    #if title:
-    #    print(f"Test passed. Retrieved title: {title}")
-    #else:
-    #    print("Test failed. No title retrieved.")
-
-    print(f"Testing get_title_from_lccn_selenium with LCCN: {test_lccn}")
-    title = get_title_from_lccn_selenium(test_lccn, verbose=True)
+    print(f"Testing get_title_from_lccn_json with LCCN: {test_lccn}")
+    title = get_title_from_lccn_json(test_lccn, verbose=True)
     if title:
         print(f"Test passed. Retrieved title: {title}")
     else:
         print("Test failed. No title retrieved.")
+
+    #print(f"Testing get_title_from_lccn_selenium with LCCN: {test_lccn}")
+    #title = get_title_from_lccn_selenium(test_lccn, verbose=True)
+    #if title:
+     #   print(f"Test passed. Retrieved title: {title}")
+    #else:
+     #   print("Test failed. No title retrieved.")
