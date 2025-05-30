@@ -1,6 +1,8 @@
 import requests
 import os
 import json
+from rapidfuzz import fuzz
+import re
 
 def get_lccn_from_title(title):
     url = "https://www.loc.gov/search/"
@@ -9,7 +11,7 @@ def get_lccn_from_title(title):
         "fo": "json",
         "count": 100,  # Adjust count as needed
     }
-    print(f"DEBUG URL: {url} with params: {params}")  # Print the URL and params for debugging
+    #print(f"DEBUG URL: {url} with params: {params}")  # Print the URL and params for debugging
     try:
         response = requests.get(url, params=params)
         response.raise_for_status()
@@ -19,29 +21,60 @@ def get_lccn_from_title(title):
         with open("data/debug-data.json", "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
         results = data.get("results", [])
-        #print(json.dumps(results, indent=2, ensure_ascii=False))  # Print the results for debugging
+
+        threshold = 80
+        matches = []
+        input_len = len(title.strip())
         for record in results:
-            record_title = record.get("title", "")
-            #print(f"DEBUG Record Title: {title}: {record_title}")  # Print each record title for debugging
-            if record_title.strip().lower().startswith(title.strip().lower()):
-                lccn_list = record.get("number_lccn", [])
-                if not isinstance(lccn_list, list):
-                    lccn_list = []
-                lccn = lccn_list[0] if lccn_list else 'n/a'
-                alt_lccn = lccn_list[1:] if len(lccn_list) > 1 else []
+            candidate_titles = []
+            if "title" in record and isinstance(record["title"], str):
+                candidate_titles.append(record["title"])
+            if isinstance(record.get("item"), dict) and "title" in record["item"]:
+                candidate_titles.append(record["item"]["title"])
 
-                oclc_list = record.get("number_oclc", [])
-                if not isinstance(oclc_list, list):
-                    oclc_list = []
-                oclc = oclc_list[0] if oclc_list else 'n/a'
-                alt_oclc = oclc_list[1:] if len(oclc_list) > 1 else []
+            record_lccn = record.get("number_lccn", [])
+            record_oclc = record.get("number_oclc", [])
 
-                return {
-                    "lccn": lccn,
-                    "alt_lccn": alt_lccn,
-                    "oclc": oclc,
-                    "alt_oclc": alt_oclc
-                }
+            for candidate_title in candidate_titles:
+                #print(f"DEBUG candidate title: '{candidate_title}'")
+                norm_input = normalize(title)
+                norm_candidate = normalize(candidate_title)
+                # Print normalized strings for debugging
+                #print(f"DEBUG norm_input: '{norm_input}', norm_candidate: '{norm_candidate}'")
+                # Compare input to the start of the normalized candidate title
+                score = fuzz.ratio(norm_input, norm_candidate[:len(norm_input)])
+                #print(f"DEBUG score for '{candidate_title}': {score}")
+                if score >= threshold:
+                    matches.append({
+                        "score": score,
+                        "title": candidate_title,
+                        "number_lccn": record_lccn,
+                        "number_oclc": record_oclc
+                    })
+
+        if matches:
+            # Sort matches by score descending
+            matches.sort(key=lambda x: x["score"], reverse=True)
+            #print("DEBUG: All matches and their LCCNs:")
+            #for m in matches:
+                #print(f"  Title: {m['title']}, LCCN: {m['number_lccn']}, Score: {m['score']}")
+            best = matches[0]
+            alt_lccn = []
+            alt_oclc = []
+            # Collect alternate LCCNs/OCLCs from other matches
+            for m in matches[1:]:
+                alt_lccn.extend([l for l in m.get("number_lccn", []) if l not in alt_lccn and l not in best.get("number_lccn", [])])
+                alt_oclc.extend([o for o in m.get("number_oclc", []) if o not in alt_oclc and o not in best.get("number_oclc", [])])
+            lccn_list = best.get("number_lccn", [])
+            oclc_list = best.get("number_oclc", [])
+            lccn = lccn_list[0] if lccn_list else 'n/a'
+            oclc = oclc_list[0] if oclc_list else 'n/a'
+            return {
+                "lccn": lccn,
+                "alt_lccn": alt_lccn,
+                "oclc": oclc,
+                "alt_oclc": alt_oclc
+            }
         return {
             "lccn": 'n/a',
             "alt_lccn": [],
@@ -56,6 +89,10 @@ def get_lccn_from_title(title):
             "oclc": 'n/a',
             "alt_oclc": []
         }
+
+def normalize(s):
+    # Lowercase, remove punctuation, collapse whitespace
+    return re.sub(r'\W+', '', s.strip().lower())
 
 if __name__ == "__main__":
     import sys
