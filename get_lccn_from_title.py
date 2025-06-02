@@ -10,6 +10,7 @@ def get_lccn_from_title(title):
         "q": title,
         "fo": "json",
         "count": 100,  # Adjust count as needed
+        'fa': 'original-format:book',
     }
     #print(f"DEBUG URL: {url} with params: {params}")  # Print the URL and params for debugging
     try:

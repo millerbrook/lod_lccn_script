@@ -3,7 +3,7 @@ import pprint
 
 # Import the Open Library and LOC functions
 from retrieve_from_open_library_dump import find_best_title_match
-from test2_get_lccn_from_title import get_lccn_from_title  # You need to rename your function in test2_get_lccn_from_title.py
+from get_lccn_from_title import get_lccn_from_title  # You need to rename your function in test2_get_lccn_from_title.py
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:

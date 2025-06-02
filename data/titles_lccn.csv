@@ -1,14 +1,84 @@
 Title,LCCN,Alt_LCCN,OCLC,Alt_OCLC,No_match
 
-For Whom the Bell Tolls,79106030,[],609080,"['27623592', '1056737649']",
-The Great Gatsby,2008277435,['2024051336'],592107709,[],
-Light in August,32025588,[],7850983,"['1369686', '4203422', '87869526']",
-The Last of the Mohicans,32007908,['06029884'],3493351,['1538219'],
-The Population Bomb,68006116,[],16206257,"['170688', '87861404', '22769']",
-"England & Wales, Quaker Birth, Marriage, and Death Registers, 1578-1837",,[],,[],No match,
-"The Old Quaker Meeting House in Hackins Hey, Liverpool",,[],,[],No match,
-The Adventures of Huckleberry Finn,2011389884,['92051065'],433076095,"['317483469', '27429606', '884360841']",
-Midsummer Night's Dream,2016044651,['74176297'],23669352,"['936619982', '1031896']",
-Middlemarch,96007739,[],233270625,['6740814'],
-Ulysses,97193258,['91189572'],35181748,['50425062'],
-"The genealogies and estates of Charlestown : in the county of Middlesex and commonwealth of Massachusetts, 1629-1818",,[],,[],No match
+
+"""Townships: Aspull,"" in A History of the County of Lancaster: Volume 4, ed. William Farrer and J Brownbill (London: Victoria County History, 1911), 118-122. British History Online, accessed January 9, 2024, http://www.british-history.ac.uk/vch/lancs/vol4/pp118-122.",,[],,[],No match
+#15815,,[],,[],No match
+#15954,,[],,[],No match
+15787,,[],,[],No match
+15851,,[],,[],No match
+15893,,[],,[],No match
+15929,,[],,[],No match
+15930,,[],,[],No match
+15935,,[],,[],No match
+15936,,[],,[],No match
+15958,,[],,[],No match
+15962,,[],,[],No match
+15975,,[],,[],No match
+15990 - addressed to Canbey in Liverpool,,[],,[],No match
+16164,,[],,[],No match
+A Collection of Sufferings Vol. 2-Besse p. 100,,[],,[],No match
+Abstract of Wills at Philadelphia,,[],,[],No match
+Account of Some of the Families Bearing the Name of Heathcote,85134583,[],,[],
+Accounts of Goods at Pennsbury,,[],,[],No match
+AlleFriezen,,[],,[],No match
+AlleGroningers,,[],,[],No match
+Biogragisch portaal van nederland,,[],,[],No match
+Burial Records; Marriage Record,,[],,[],No match
+"Caribbean, English Settlers in Barbados, 1637-1800, 84; Barbados, Church Records, 1637-1930",,[],,[],No match
+Chester - DAMS #16125,,[],,[],No match
+"Clayton, Anne",,[],,[],No match
+DAMS #16115,,[],,[],No match
+Death record in Research folder,,[],,[],No match
+DoD: #16160,,[],,[],No match
+"Early Stages of Quaker Movement in Lancashire, 58.",,[],,[],No match
+Edited collection of his letters available in Sources folder,,[],,[],No match
+"England & Wales, Quaker Birth, Marriage, and Death Registers, 1578-1837",,[],,[],No match
+"England & Wales, Society Of Friends (Quaker) Births 1578-1841",,[],,[],No match
+"England & Wales, Society Of Friends (Quaker) Burials 1578-1841",,[],,[],No match
+"England & Wales, Society Of Friends (Quaker) Marriages 1578-1841",,[],,[],No match
+"Establishment of the Meeting for Sufferings of London Yearly Meeting, 1676 in JFHS Vol. 21 No. 1-4",,[],,[],No match
+FindAGrave,,[],,[],No match
+GAMEO,,[],,[],No match
+"History of Bucks County, Pennsylvania: Including an Account of Its Original 	Exploration, Its Relation to the Settlements of New Jersey and Delaware, Its Erection Into a Separate County, Also Its Subsequent Growth and Development, with Sketches of Its Historic and Interesting Localities, and Biographies of Many of Its Representative Citizens",,[],,[],No match
+"Immigration of Irish Quakers to Pennsylvania, 1682-1750, p. 22, 284",,[],,[],No match
+Inventories of the Estate of John and Elizabeth Tatham,,[],,[],No match
+"James Murphy, ""The Old Quaker Meeting House in Hackins Hey, Liverpool,"" 1954",,[],,[],No match
+"Joseph S. Walton, ""David Lloyd,"" in Journal of Friends' Historical Society, Friends' Historical Society (Headley Brothers, 1906), 3-4: 49,",,[],,[],No match
+https://www.google.com/books/edition/The_Journal_of_the_Friends_Historical_So/7vQNAQAAIAAJ?hl=en&gbpv=1 .,,[],,[],No match
+"Lancashire Quakers and the Oath, 1660-1722",,[],,[],No match
+Lawmaking and Lesiglators in Pennsylvania: A Biographical Dictionary,,[],,[],No match
+"Lowry III, p.444",,[],,[],No match
+"Lowry III, p.783",,[],,[],No match
+Manchester - 15778; 15785,,[],,[],No match
+"Marriage Record, 1694 in Research folder",,[],,[],No match
+"Marriage to Mary Sharrock Record, 1667 in Research folder; Marriage to Rebecca Penketh Record, 1694 in Research folder",,[],,[],No match
+"Massachusetts, Town Clerk, Vital and Town Records, 1626-2001",,[],,[],No match
+NNBW,,[],,[],No match
+Nationaal Archief,,[],,[],No match
+New Dutch Biographical Dictionary,,[],,[],No match
+"Nottinghamshire, England, Church of England Baptisms, Marriages and Burials, 1538-1812",,[],,[],No match
+OpenArchieven,,[],,[],No match
+Passenger List,2002421649,[],31148900,"['45441519', '1007354211']",
+"Pennsylvania Probate Records, 1683-1994",,[],,[],No match
+"Records of the Courts of the Quarter Sessions of Bucks County, 1684-1700",,[],,[],No match
+"Robert Charles Moon, Morris Family of Philadelphia: Descendants of Anthony Morris, vol. 1 (Philadelphia, 1908): 117-119, https://play.google.com/books/reader?id=9hs5AAAAMAAJ&hl=en&pg=GBS.PA117.",,[],,[],No match
+SAA,96079739,['94137965'],28643298,['7053485'],
+Spence collection letter 151-152,,[],,[],No match
+The Atkinsons of New Jersey from the Records of Friends Meetings,,[],17338820,[],
+"The History of Bucks County, Pennsylvania: From the Discovery of the Delaware to the Present Time",,[],1011555483,['14578216'],
+The Journal of George Fox-Penney p. 431,,[],,[],No match
+The Quaker Community on Barbados-Gragg p.77,,[],,[],No match
+The Quakers in the American Colonies-Jones p. 268,,[],,[],No match
+The Short Journal and Itinerary Journals of George Fox-Penney p. 338,,[],,[],No match
+The Storrs Family-Storrs p. 39,,[],,[],No match
+"Thomas Thurston, Renegade Maryland Quaker-Carroll in Maryland Historical Magazine Summer 1967",,[],,[],No match
+[Waterlands Archief],,[],,[],No match
+death - 15908,,[],,[],No match
+death {{https://stars.library.ucf.edu/printmigrationnetwork-pemberton/154/}},,[],,[],No match
+https://archive.org/stream/historyofbucksco00davi_0/historyofbucksco00davi_0_djvu.txt,,[],,[],No match
+https://babel.hathitrust.org/cgi/pt?id=hvd.hx3kmm&seq=84,,[],,[],No match
+https://de.wikipedia.org/wiki/Johann_Juncker,,[],,[],No match
+https://digital.francke-halle.de/fsha/content/titleinfo/600831,,[],,[],No match
+"https://en.wikisource.org/wiki/Dictionary_of_National_Biography,_1885-1900/Pennyman,_John",,[],,[],No match
+https://old.maa.org/press/periodicals/convergence/e-g-ziegenbalg-s-danish-translation-of-euclid-s-elements-ziegenbalg-s-life-and-career,,[],,[],No match
+https://stars.library.ucf.edu/printmigrationnetwork-pemberton/300/,,[],,[],No match
