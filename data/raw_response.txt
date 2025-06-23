@@ -1,0 +1,259 @@
+<?xml version="1.0"?>
+<zs:searchRetrieveResponse xmlns:zs="http://www.loc.gov/zing/srw/"><zs:version>1.1</zs:version><zs:numberOfRecords>10</zs:numberOfRecords><zs:records><zs:record><zs:recordSchema>mods</zs:recordSchema><zs:recordPacking>xml</zs:recordPacking><zs:recordData><mods xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.loc.gov/mods/v3" version="3.8" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-8.xsd">
+  <titleInfo>
+    <title>Piety promoted, in a collection of dying sayings of many of the people call'd Quakers</title>
+  </titleInfo>
+  <titleInfo type="alternative">
+    <title>Dying sayings</title>
+  </titleInfo>
+  <name type="personal">
+    <namePart>Raylton, Thomas,</namePart>
+    <namePart type="date">1671-1723, [from old catalog]</namePart>
+    <role>
+      <roleTerm type="text">ed</roleTerm>
+    </role>
+  </name>
+  <name type="corporate">
+    <namePart>Pre-1801 Imprint Collection (Library of Congress)</namePart>
+  </name>
+  <typeOfResource>text</typeOfResource>
+  <genre authority="marcgt">biography</genre>
+  <originInfo>
+    <place>
+      <placeTerm type="code" authority="marccountry">enk</placeTerm>
+    </place>
+    <issuance>monographic</issuance>
+    <place>
+      <placeTerm type="text">London</placeTerm>
+    </place>
+    <agent>
+      <namePart>Printed and sold by L. Hinde</namePart>
+    </agent>
+    <dateIssued>1766</dateIssued>
+    <edition>2d ed.</edition>
+  </originInfo>
+  <language>
+    <languageTerm authority="iso639-2b" type="code">eng</languageTerm>
+  </language>
+  <physicalDescription>
+    <form authority="marcform">microfilm</form>
+    <extent>1 v. 15 cm.</extent>
+  </physicalDescription>
+  <subject authority="lcsh">
+    <topic>Quakers</topic>
+    <genre>Biography</genre>
+  </subject>
+  <classification authority="lcc">BX7790 .P48</classification>
+  <identifier type="lccn">04008882</identifier>
+  <recordInfo>
+    <recordContentSource authority="marcorg">DLC</recordContentSource>
+    <recordCreationDate encoding="marc">830309</recordCreationDate>
+    <recordChangeDate encoding="iso8601">19990903142254.0</recordChangeDate>
+    <recordIdentifier>10073220</recordIdentifier>
+    <recordOrigin>Converted from MARCXML to MODS version 3.8 using MARC21slim2MODS3-8_XSLT1-0.xsl
+				(Revision 1.172 20230208)</recordOrigin>
+  </recordInfo>
+</mods></zs:recordData><zs:recordPosition>1</zs:recordPosition></zs:record><zs:record><zs:recordSchema>mods</zs:recordSchema><zs:recordPacking>xml</zs:recordPacking><zs:recordData><mods xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.loc.gov/mods/v3" version="3.8" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-8.xsd">
+  <titleInfo>
+    <title>Piety promoted</title>
+    <subTitle>in a collection of dying sayings of many of the people called Quakers</subTitle>
+  </titleInfo>
+  <name type="personal">
+    <namePart>Evans, William,</namePart>
+    <namePart type="date">1787-1867</namePart>
+    <role>
+      <roleTerm type="text">ed</roleTerm>
+    </role>
+  </name>
+  <name type="personal">
+    <namePart>Evans, Thomas,</namePart>
+    <namePart type="date">1798-1868</namePart>
+    <role>
+      <roleTerm type="text">joint ed</roleTerm>
+    </role>
+  </name>
+  <typeOfResource>text</typeOfResource>
+  <genre authority="marcgt">biography</genre>
+  <originInfo>
+    <place>
+      <placeTerm type="code" authority="marccountry">pau</placeTerm>
+    </place>
+    <dateIssued encoding="marc">1854</dateIssued>
+    <issuance>monographic</issuance>
+    <place>
+      <placeTerm type="text">Philadelphia</placeTerm>
+    </place>
+    <agent>
+      <namePart>Friends' Books Store</namePart>
+    </agent>
+    <dateIssued>[1854]</dateIssued>
+    <edition>A new and complete edition,</edition>
+  </originInfo>
+  <language>
+    <languageTerm authority="iso639-2b" type="code">eng</languageTerm>
+  </language>
+  <physicalDescription>
+    <form authority="marcform">print</form>
+    <extent>4 v. 19 cm.</extent>
+  </physicalDescription>
+  <note type="statement of responsibility">with a brief account of some of their labours in the gospel, and sufferings for the same.</note>
+  <note>On spine: Memorials of Quakers.</note>
+  <note>By various authors.</note>
+  <subject authority="lcsh">
+    <topic>Quakers</topic>
+    <genre>Biography</genre>
+  </subject>
+  <classification authority="lcc">BX7790 .P5 1854</classification>
+  <identifier type="lccn">44051785</identifier>
+  <identifier type="oclc">1109691</identifier>
+  <recordInfo>
+    <recordContentSource authority="marcorg">DLC</recordContentSource>
+    <recordCreationDate encoding="marc">741212</recordCreationDate>
+    <recordChangeDate encoding="iso8601">19990902121514.0</recordChangeDate>
+    <recordIdentifier>6463264</recordIdentifier>
+    <recordOrigin>Converted from MARCXML to MODS version 3.8 using MARC21slim2MODS3-8_XSLT1-0.xsl
+				(Revision 1.172 20230208)</recordOrigin>
+  </recordInfo>
+</mods></zs:recordData><zs:recordPosition>2</zs:recordPosition></zs:record><zs:record><zs:recordSchema>mods</zs:recordSchema><zs:recordPacking>xml</zs:recordPacking><zs:recordData><mods xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.loc.gov/mods/v3" version="3.8" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-8.xsd">
+  <titleInfo>
+    <title>Piety promoted, in a collection of dying sayings of many of the poeple called Quakers</title>
+  </titleInfo>
+  <name type="personal">
+    <namePart>Tomkins, John,</namePart>
+    <namePart type="date">1663?-1706, [from old catalog]</namePart>
+    <role>
+      <roleTerm type="text">ed</roleTerm>
+    </role>
+  </name>
+  <typeOfResource>text</typeOfResource>
+  <genre authority="marcgt">biography</genre>
+  <originInfo>
+    <place>
+      <placeTerm type="code" authority="marccountry">enk</placeTerm>
+    </place>
+    <dateIssued encoding="marc" point="start">1812</dateIssued>
+    <dateIssued encoding="marc" point="end">9999</dateIssued>
+    <issuance>monographic</issuance>
+    <place>
+      <placeTerm type="text">London</placeTerm>
+    </place>
+    <agent>
+      <namePart>W. Phillips</namePart>
+    </agent>
+    <dateIssued>1812-</dateIssued>
+  </originInfo>
+  <language>
+    <languageTerm authority="iso639-2b" type="code">eng</languageTerm>
+  </language>
+  <physicalDescription>
+    <form authority="marcform">print</form>
+    <extent>1 v. 18 cm.</extent>
+  </physicalDescription>
+  <note type="additional physical form">Also available in digital form.</note>
+  <subject authority="lcsh">
+    <topic>Quakers</topic>
+    <genre>Biography</genre>
+  </subject>
+  <subject authority="lcsh">
+    <topic>Last words</topic>
+  </subject>
+  <classification authority="lcc">BX7790 .P5 1812</classification>
+  <location>
+    <url displayLabel="electronic resource" usage="primary display">https://hdl.loc.gov/loc.gdc/50041871</url>
+  </location>
+  <identifier type="lccn">50041871</identifier>
+  <recordInfo>
+    <recordContentSource authority="marcorg">DLC</recordContentSource>
+    <recordCreationDate encoding="marc">830309</recordCreationDate>
+    <recordChangeDate encoding="iso8601">20230216165304.0</recordChangeDate>
+    <recordIdentifier>7897672</recordIdentifier>
+    <recordOrigin>Converted from MARCXML to MODS version 3.8 using MARC21slim2MODS3-8_XSLT1-0.xsl
+				(Revision 1.172 20230208)</recordOrigin>
+  </recordInfo>
+</mods></zs:recordData><zs:recordPosition>3</zs:recordPosition></zs:record><zs:record><zs:recordSchema>mods</zs:recordSchema><zs:recordPacking>xml</zs:recordPacking><zs:recordData><mods xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.loc.gov/mods/v3" version="3.8" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-8.xsd">
+  <titleInfo>
+    <title>Piety promoted; in brief biographical memorials, of some of the religious Society of Friends, commonly called Quakers</title>
+  </titleInfo>
+  <typeOfResource>text</typeOfResource>
+  <genre authority="marcgt">biography</genre>
+  <originInfo>
+    <place>
+      <placeTerm type="code" authority="marccountry">enk</placeTerm>
+    </place>
+    <dateIssued encoding="marc" point="start" qualifier="questionable">1800</dateIssued>
+    <dateIssued encoding="marc" point="end" qualifier="questionable">1899</dateIssued>
+    <issuance>monographic</issuance>
+    <place>
+      <placeTerm type="text">London</placeTerm>
+    </place>
+    <agent>
+      <namePart>Printed and sold by Harvey and Darton</namePart>
+    </agent>
+    <dateIssued>18</dateIssued>
+  </originInfo>
+  <language>
+    <languageTerm authority="iso639-2b" type="code">eng</languageTerm>
+  </language>
+  <physicalDescription>
+    <form authority="marcform">print</form>
+    <extent>v. 19 cm.</extent>
+  </physicalDescription>
+  <subject authority="lcsh">
+    <topic>Quakers</topic>
+    <genre>Biography</genre>
+  </subject>
+  <classification authority="lcc">BX7790 .P49</classification>
+  <identifier type="lccn">44052282</identifier>
+  <recordInfo>
+    <recordContentSource authority="marcorg">DLC</recordContentSource>
+    <recordCreationDate encoding="marc">830309</recordCreationDate>
+    <recordChangeDate encoding="iso8601">19990903142518.0</recordChangeDate>
+    <recordIdentifier>10209768</recordIdentifier>
+    <recordOrigin>Converted from MARCXML to MODS version 3.8 using MARC21slim2MODS3-8_XSLT1-0.xsl
+				(Revision 1.172 20230208)</recordOrigin>
+  </recordInfo>
+</mods></zs:recordData><zs:recordPosition>4</zs:recordPosition></zs:record><zs:record><zs:recordSchema>mods</zs:recordSchema><zs:recordPacking>xml</zs:recordPacking><zs:recordData><mods xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.loc.gov/mods/v3" version="3.8" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-8.xsd">
+  <titleInfo>
+    <title>Piety promoted, in brief memorials, and dying expressions, of some of the people called Quakers</title>
+  </titleInfo>
+  <name type="personal">
+    <namePart>Wagstaffe, Thomas,</namePart>
+    <namePart type="date">1724-1802. [from old catalog]</namePart>
+  </name>
+  <typeOfResource>text</typeOfResource>
+  <genre authority="marcgt">biography</genre>
+  <originInfo>
+    <place>
+      <placeTerm type="code" authority="marccountry">enk</placeTerm>
+    </place>
+    <issuance>monographic</issuance>
+    <place>
+      <placeTerm type="text">London</placeTerm>
+    </place>
+    <agent>
+      <namePart>Printed in the year 1796. New York, Reprinted by M. Day</namePart>
+    </agent>
+    <dateIssued>1823</dateIssued>
+  </originInfo>
+  <language>
+    <languageTerm authority="iso639-2b" type="code">eng</languageTerm>
+  </language>
+  <physicalDescription>
+    <form authority="marcform">print</form>
+    <extent>vi, [7]-202, [2] p. 19 cm.</extent>
+  </physicalDescription>
+  <subject authority="lcsh">
+    <topic>Quakers</topic>
+    <genre>Biography</genre>
+  </subject>
+  <classification authority="lcc">BX7790 .P55 pt. 9 1823</classification>
+  <identifier type="lccn">44051790</identifier>
+  <recordInfo>
+    <recordContentSource authority="marcorg">DLC</recordContentSource>
+    <recordCreationDate encoding="marc">830309</recordCreationDate>
+    <recordChangeDate encoding="iso8601">19990903142616.0</recordChangeDate>
+    <recordIdentifier>9272943</recordIdentifier>
+    <recordOrigin>Converted from MARCXML to MODS version 3.8 using MARC21slim2MODS3-8_XSLT1-0.xsl
+				(Revision 1.172 20230208)</recordOrigin>
+  </recordInfo>
+</mods></zs:recordData><zs:recordPosition>5</zs:recordPosition></zs:record></zs:records><zs:nextRecordPosition>6</zs:nextRecordPosition><zs:echoedSearchRetrieveRequest><zs:version>1.1</zs:version><zs:query>dc.title=Piety Promoted</zs:query><zs:startRecord>1</zs:startRecord><zs:maximumRecords>5</zs:maximumRecords><zs:recordPacking>xml</zs:recordPacking><zs:recordSchema>mods</zs:recordSchema></zs:echoedSearchRetrieveRequest><zs:diagnostics xmlns:diag="http://www.loc.gov/zing/srw/diagnostic/"><diag:diagnostic><diag:uri>info:srw/diagnostic/1/8</diag:uri><diag:details>fo</diag:details><diag:message>Unsupported parameter</diag:message></diag:diagnostic></zs:diagnostics></zs:searchRetrieveResponse>

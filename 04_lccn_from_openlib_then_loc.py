@@ -4,6 +4,7 @@ import os
 import json
 import csv
 import concurrent.futures
+import xml.etree.ElementTree as ET
 
 from get_lccn_from_title import get_lccn_from_title
 from retrieve_from_open_library_dump import find_best_title_match
@@ -57,6 +58,24 @@ def get_lccn_with_timeout(title, timeout=10):
             print("LOC search took too long (>10s), moving to Open Library...")
             return None
 
+def parse_xml_response(response):
+    """Parse XML response to extract LCCN and other identifiers."""
+    try:
+        root = ET.fromstring(response.text)
+        # Example: extracting LCCN from XML
+        lccn_elements = root.findall(".//identifier[@type='lccn']")
+        lccns = [elem.text for elem in lccn_elements if elem.text]
+
+        return {
+            "lccn": lccns[0] if lccns else 'n/a',
+            "alt_lccn": lccns[1:],
+            "oclc": 'n/a',
+            "alt_oclc": []
+        }
+    except ET.ParseError as e:
+        print(f"XML parsing error: {e}")
+        return None
+
 def main():
     titles = read_titles(os.path.join("data", "unique_sources.txt"))  # <-- updated filename here
     csv_path = os.path.join("data", "titles_lccn.csv")
@@ -73,21 +92,8 @@ def main():
             print(f"LOC LCCN found: {loc_result['lccn']}")
             results.append({"title": title, "source": "LOC", **loc_result})
         else:
-            print("No LCCN from LOC, searching Open Library...")
-            openlib_result = find_best_title_match(title)
-            if openlib_result and openlib_result.get("LCCN") and openlib_result["LCCN"] not in ('', 'n/a'):
-                print(f"Open Library LCCN found: {openlib_result['LCCN']}")
-                results.append({
-                    "title": title,
-                    "source": "OpenLibrary",
-                    "lccn": openlib_result.get("LCCN", "n/a"),
-                    "alt_lccn": openlib_result.get("Alt_LCCN", []),
-                    "oclc": openlib_result.get("OCLC", "n/a"),
-                    "alt_oclc": openlib_result.get("Alt_OCLC", [])
-                })
-            else:
-                print("No LCCN found in either source.")
-                results.append({"title": title, "source": "None", "lccn": "n/a", "alt_lccn": [], "oclc": "n/a", "alt_oclc": []})
+            print("No LCCN found in either source.")
+            results.append({"title": title, "source": "None", "lccn": "n/a", "alt_lccn": [], "oclc": "n/a", "alt_oclc": []})
         time.sleep(10)
 
     # Save results to JSON

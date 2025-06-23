@@ -9,12 +9,16 @@ def get_target_persons(filepath='data/standard_directory_persons.xlsx', sheetnam
 
     # Find the column index for 'Researcher/Date'
     header = [cell.value for cell in next(ws.iter_rows(min_row=1, max_row=1))]
-    col_idx = header.index('Researcher/Date') + 1  # openpyxl is 1-based
+    
+    # Check if 'Researcher/Date' exists in header
+    researcher_col_exists = 'Researcher/Date' in header
+    col_idx = header.index('Researcher/Date') + 1 if researcher_col_exists else -1  # openpyxl is 1-based
 
-    # Collect rows (filter by red if requested)
+    # Collect rows (filter by red if requested and column exists)
     rows = []
     for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
-        if filter_red:
+        # Only apply red filtering if the column exists and filtering is requested
+        if filter_red and researcher_col_exists:
             cell = row[col_idx - 1]
             fill = cell.fill
             # Check if the cell has a red fill (RGB 'FFFF0000' is standard red)
@@ -32,8 +36,6 @@ def get_target_persons(filepath='data/standard_directory_persons.xlsx', sheetnam
     exclude_mask = (mask >= 6).any(axis=1)
     df_filtered = df[~exclude_mask]
 
-    # If you want to not filter anything, just use the original DataFrame
-    # df_filtered = df.copy()
     # Write to CSV in the data folder
     df_filtered.to_csv('data/target_persons.csv', index=False, encoding='utf-8-sig')
 

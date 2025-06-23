@@ -123,14 +123,22 @@ def process_persons_dataframe(df_2):
     df_persons = df_2.replace('', np.nan, regex=True)
     np.random.seed(1)
 
-    # Drop unnecessary columns
-    df_persons.drop(['Mention only?', 'Researcher/Date'], axis=1, inplace=True)
+    # Drop unnecessary columns if they exist, ignoring errors if columns don't exist
+    df_persons.drop(['Mention only?', 'Researcher/Date'], axis=1, errors='ignore', inplace=True)
 
     # Data cleaning
     df_persons.dropna(how='all', inplace=True)
-    df_persons = df_persons[df_persons['Authority Terms'].notna()]
-    df_persons = df_persons[~df_persons['Authority Terms'].str.contains(r'\[|\]|\(|\)')]
-    df_persons.rename(columns={"Authority Terms": "name"}, inplace=True)
+    
+    # Handle both possible column naming conventions
+    if 'Authority Terms' in df_persons.columns:
+        df_persons = df_persons[df_persons['Authority Terms'].notna()]
+        df_persons = df_persons[~df_persons['Authority Terms'].str.contains(r'\[|\]|\(|\)')]
+        df_persons.rename(columns={"Authority Terms": "name"}, inplace=True)
+    elif 'name' in df_persons.columns:
+        df_persons = df_persons[df_persons['name'].notna()]
+        df_persons = df_persons[~df_persons['name'].str.contains(r'\[|\]|\(|\)')]
+    else:
+        raise KeyError("Neither 'Authority Terms' nor 'name' column found in the DataFrame")
 
     # Add empty columns for sources
     df_persons['DoB Source'] = ''
